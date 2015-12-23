@@ -79,7 +79,7 @@ public class LoopingInputStream extends FilterInputStream {
                 return -1;
             } else {
                 currentPosition++;
-                if(currentLoop.getEndPosition() == currentPosition || currentLoop.getEndPosition() == Long.MAX_VALUE) {
+                if(currentLoop.getEndPosition() == Long.MAX_VALUE || currentLoop.getEndPosition() == currentPosition) {
                     currentLoop = mainLoop;
                 }
             }
@@ -87,10 +87,13 @@ public class LoopingInputStream extends FilterInputStream {
         int result = in.read();
         if(result == -1) {
             if(currentLoop.continueOnEOFReached(currentPosition, this)) {
-                reset();
                 currentLoop.onLoopEnd();
-                currentPosition = loopStart;
-                return read();
+                if(currentLoop.shouldContinue(currentPosition)) {
+                    System.out.println(">>> "+currentPosition);
+                    reset();
+                    currentPosition = loopStart;
+                    return read();
+                }
             }
         }
         return result;
@@ -103,6 +106,7 @@ public class LoopingInputStream extends FilterInputStream {
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
+        // directly taken from InputStream
         if (b == null) {
             throw new NullPointerException();
         } else if (off < 0 || len < 0 || len > b.length - off) {
