@@ -117,6 +117,64 @@ public class ByteArray {
     }
 
     /**
+     * Sets the byte at the given index
+     * @param b
+     *          The byte to set
+     * @param index
+     *          The index
+     */
+    public void put(byte b, int index) {
+        data[index] = b;
+    }
+
+    /**
+     * Write a single signed integer into the ByteArray at the given index, respecting the current byte order.<br/>
+     * @param i
+     *          The integer to write
+     * @param index
+     *          The index
+     */
+    public void putInt(int i, int index) {
+        putArray(toBytes(i, 4), index);
+    }
+
+    /**
+     * Write a single signed long into the ByteArray at the given index, respecting the current byte order.<br/>
+     * @param l
+     *          The long to write
+     * @param index
+     *          The index
+     */
+    public void putLong(long l, int index) {
+        putArray(toBytes(l, 8), index);
+    }
+
+    /**
+     * Write a single unsigned integer into the ByteArray at the given index, respecting the current byte order.<br/>
+     * @param i
+     *          The unsigned integer to write
+     * @param index
+     *          The index
+     */
+    public void putUnsignedInt(long i, int index) {
+        putArray(toBytes(i, 4), index);
+    }
+
+    /**
+     * Writes the content of the given array inside the ByteArray at the given index.<br/>
+     * @param bytes
+     *          The bytes to write
+     * @param index
+     *          The index
+     */
+    public void putArray(byte[] bytes, int index) {
+        for (int i = 0; i < bytes.length; i++) {
+            byte b = bytes[i];
+            put(b, i+index);
+        }
+    }
+
+    /**
      * Used to convert an int or a long to a byte array, while respecting the byte order
      * @param value
      *          Value to convert
@@ -132,9 +190,9 @@ public class ByteArray {
         byte[] bytes = new byte[byteCount];
         for (int i = 0; i < byteCount; i++) {
             if(byteOrder == ByteOrder.BIG_ENDIAN) {
-                bytes[i] = (byte) (value >> (1 << (i*8)) & 0xFF);
+                bytes[i] = (byte) (value >> ((i*8)) & 0xFF);
             } else {
-                bytes[i] = (byte) (value >> (1 << (8*(byteCount-1)-i*8)) & 0xFF);
+                bytes[i] = (byte) (value >> ((8*(byteCount-1)-i*8)) & 0xFF);
             }
         }
         return bytes;
@@ -211,5 +269,13 @@ public class ByteArray {
      */
     public byte[] backingArray() {
         return data;
+    }
+
+    /**
+     * Reset read and write indexes to 0
+     */
+    public void reset() {
+        readCursor = 0;
+        writeCursor = 0;
     }
 }
