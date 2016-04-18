@@ -1,7 +1,9 @@
 package org.jglr.flows.io;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 
 /**
  * Represents a resizable and growable byte array.
@@ -192,7 +194,7 @@ public class ByteArray {
             if(byteOrder == ByteOrder.BIG_ENDIAN) {
                 bytes[i] = (byte) (value >> ((i*8)) & 0xFF);
             } else {
-                bytes[i] = (byte) (value >> ((8*(byteCount-1)-i*8)) & 0xFF);
+                bytes[i] = (byte) (value >> ((8*(byteCount-i-1))) & 0xFF);
             }
         }
         return bytes;
@@ -277,5 +279,18 @@ public class ByteArray {
     public void reset() {
         readCursor = 0;
         writeCursor = 0;
+    }
+
+    public void putChars(String chars) {
+        try {
+            byte[] bytes = chars.getBytes("UTF-8");
+            putArray(bytes);
+            put((byte) 0);
+            for (int i = 0; i < 4 - ((bytes.length + 1) % 4); i++) {
+                put((byte) 0);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
