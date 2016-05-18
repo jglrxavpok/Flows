@@ -41,4 +41,28 @@ public class TreeNode<T> {
         children.add(node);
     }
 
+    public boolean equals(Object other) {
+        if(other instanceof TreeNode) {
+            TreeNode node = ((TreeNode) other);
+            boolean equalContent;
+            if (content == null || node.content == null) {
+                equalContent = content == node.content;
+            } else {
+                equalContent = content.equals(node.content);
+            }
+            return getName().equals(node.getName()) && equalContent && childrenEquals(node);
+        }
+        return false;
+    }
+
+    private boolean childrenEquals(TreeNode node) {
+        if(node.getChildren().size() != children.size())
+            return false;
+        for (int i = 0; i < children.size(); i++) {
+            if(!node.getChildren().get(i).equals(children.get(i)))
+                return false;
+        }
+        return true;
+    }
+
 }
