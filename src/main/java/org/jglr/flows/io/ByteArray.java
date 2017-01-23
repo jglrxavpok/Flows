@@ -274,6 +274,17 @@ public class ByteArray {
     }
 
     /**
+     * Creates a byte array with copied data from the provided array
+     * @param bytes
+     * @return
+     */
+    public static ByteArray wrap(byte[] bytes) {
+        ByteArray result = new ByteArray(bytes.length);
+        result.putArray(bytes);
+        return result;
+    }
+
+    /**
      * Reset read and write indexes to 0
      */
     public void reset() {
@@ -292,5 +303,10 @@ public class ByteArray {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    public void putUnsignedInts(long... unsignedInts) {
+        for (long l : unsignedInts)
+            putUnsignedInt(l);
     }
 }
