@@ -309,4 +309,8 @@ public class ByteArray {
         for (long l : unsignedInts)
             putUnsignedInt(l);
     }
+
+    public void putUnsignedBool(boolean value) {
+        putUnsignedInt(value ? 1L : 0L);
+    }
 }
