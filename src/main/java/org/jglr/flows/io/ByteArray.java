@@ -296,8 +296,8 @@ public class ByteArray {
         try {
             byte[] bytes = chars.getBytes("UTF-8");
             putArray(bytes);
-            put((byte) 0);
-            for (int i = 0; i < 4 - ((bytes.length + 1) % 4); i++) {
+            int count = 4-(writeCursor%4);
+            for(int i = 0; i < count; i++) {
                 put((byte) 0);
             }
         } catch (UnsupportedEncodingException e) {
