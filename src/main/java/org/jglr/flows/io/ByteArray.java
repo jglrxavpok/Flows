@@ -326,6 +326,20 @@ public class ByteArray {
         putUnsignedInt(value ? 1L : 0L);
     }
 
+    public static ByteArray joinAndReset(ByteArray... arrays) {
+        int totalSize = 0;
+        for (ByteArray a : arrays) {
+            totalSize += a.getWriteCursor();
+        }
+        ByteArray result = new ByteArray(totalSize);
+        for (ByteArray a : arrays) {
+            int pos = a.getReadCursor();
+            result.putArray(a);
+            a.setReadCursor(pos);
+        }
+        return result;
+    }
+
     public static ByteArray join(ByteArray... arrays) {
         int totalSize = 0;
         for (ByteArray a : arrays) {
