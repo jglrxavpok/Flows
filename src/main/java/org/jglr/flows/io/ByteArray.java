@@ -162,6 +162,18 @@ public class ByteArray {
         putArray(toBytes(i, 4), index);
     }
 
+    public void putArray(ByteArray array) {
+        putArray(array.data, array.getReadCursor(), array.getWriteCursor()-array.getReadCursor());
+        array.readCursor = array.getWriteCursor();
+    }
+
+    public void putArray(byte[] data, int offset, int length) {
+        for (int i = 0; i < length; i++) {
+            byte b = data[i+offset];
+            put(b);
+        }
+    }
+
     /**
      * Writes the content of the given array inside the ByteArray at the given index.<br/>
      * @param bytes
@@ -312,5 +324,17 @@ public class ByteArray {
 
     public void putUnsignedBool(boolean value) {
         putUnsignedInt(value ? 1L : 0L);
+    }
+
+    public static ByteArray join(ByteArray... arrays) {
+        int totalSize = 0;
+        for (ByteArray a : arrays) {
+            totalSize += a.getWriteCursor();
+        }
+        ByteArray result = new ByteArray(totalSize);
+        for (ByteArray a : arrays) {
+            result.putArray(a);
+        }
+        return result;
     }
 }
